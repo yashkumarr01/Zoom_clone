@@ -63,3 +63,86 @@
   height: 70vh;
   width: auto;
 }
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: 20px;
+  text-align: center;
+}
+
+.meetContainer {
+  display: flex;
+  padding-inline: 20px;
+  height: 80vh;
+  gap: 10vw;
+  justify-content: center;
+}
+
+.leftPannel {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.rightPannel {
+  display: flex;
+  align-items: center;
+}
+
+.rightPannel > img {
+  width: 30vw;
+  height: auto;
+  border-radius: 20px;
+}
+
+.heading {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+@media (max-width: 800px) {
+  .meetContainer {
+    flex-direction: column;
+    height: auto;
+    padding-top: 4rem;
+    padding-bottom: 2rem;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .leftPannel,
+  .rightPannel {
+    justify-content: center;
+  }
+
+  .rightPannel > img {
+    width: 60vw; /* mobile ke liye better */
+  }
+  .heading {
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 510px) {
+  .meetContainer .MuiTextField-root {
+    width: 200px;
+  }
+  .navbar p {
+    display: none;
+  }
+  .navbar Button{
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 390px){
+  .heading{
+    font-size: 1.15rem;
+  }
+  .navbar h2{
+    font-size: 1.2rem;
+  }
+}
