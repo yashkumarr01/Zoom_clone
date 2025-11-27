@@ -18,7 +18,7 @@ import ChatIcon from "@mui/icons-material/Chat";
 
 const server_url = "http://localhost:8000";
 
-var connections = {};
+var connections = {}; // this will store RTCPeerConnection of user (jiske page pe ham hain) with other users in the room
 
 const peerConfigConnections = {
   iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
@@ -26,9 +26,9 @@ const peerConfigConnections = {
 
 export default function VideoMeetComponent() {
   var socketRef = useRef(); // isme ham socket.io client instance store krenge (Becouse ye re-render pe reset nhi hota)
-  let socketIdRef = useRef();
+  let socketIdRef = useRef(); // stores your own socket.id. used to differentiate you from other users
 
-  let localVideoref = useRef();
+  let localVideoref = useRef(); // Stores the reference of the <video> element thet shows your camera
 
   let [videoAvailable, setVideoAvailable] = useState(true);
 
@@ -38,7 +38,7 @@ export default function VideoMeetComponent() {
 
   let [audio, setAudio] = useState();
 
-  let [screen, setScreen] = useState();
+  let [screen, setScreen] = useState(); // weather you are screen sharing or not
 
   let [showModal, setModal] = useState(true);
 
@@ -48,7 +48,7 @@ export default function VideoMeetComponent() {
 
   let [message, setMessage] = useState("");
 
-  let [newMessages, setNewMessages] = useState(3);
+  let [newMessages, setNewMessages] = useState(0);
 
   let [askForUsername, setAskForUsername] = useState(true);
 
@@ -56,7 +56,7 @@ export default function VideoMeetComponent() {
 
   const videoRef = useRef([]);
 
-  let [videos, setVideos] = useState([]);
+  let [videos, setVideos] = useState([]); // list of all users streams
 
   let routeTo = useNavigate();
 
@@ -108,6 +108,7 @@ export default function VideoMeetComponent() {
           // stream ko window object(localStrem =>custom variable) me store kiya taki kisi bhi function me bina pass kiye access kr ske
           window.localStream = userMediaStream; // jo camera + mic ka stream object mil raha hai use global window me store kar raha hai
           if (localVideoref.current) {
+            // .current always stores the actual HTML element
             localVideoref.current.srcObject = userMediaStream; //ye react me jo <video> tag hai uska reference (useRef() se mila) usko hum set kar rahe hain aur us video tag ka srcObject me live media stream daal rahe hain
           }
         }
@@ -265,7 +266,6 @@ export default function VideoMeetComponent() {
                 .then((description) => {
                   connections[fromId]
                     // setLocalDescription(){peerConnection ka fn}=>iske through hum apne peer object ko batate hain ki humne apna SDP (offer/answer) fix kar liya ro isko peerConnection memory me store kar leta hai.
-                    // localDescription pehle A ke liye or fir B ke liye dobara ye change nhi hota (to infinite loop nhi hai ye)
                     .setLocalDescription(description) // description basically ek SDP answer jo ham local me set kar rhe hain.
                     .then(() => {
                       socketRef.current.emit(
@@ -328,6 +328,10 @@ export default function VideoMeetComponent() {
       // jab server batata hai ek new user join hua, to sari existing clients ki list milti hai unke liye peerConnection create kar ke connections object me store kar diya jata hai.
       socketRef.current.on("user-joined", (id, clients) => {
         clients.forEach((socketListId) => {
+          if (connections[socketListId]) {
+            // Connection already exists, skip or re-negotiate manually.
+            return;
+          }
           // har existing user ke liye ek new RTCPeerConnection ban raha hai taaki new user direct unke sath video/audio share kar sake
           connections[socketListId] = new RTCPeerConnection(
             peerConfigConnections
@@ -346,6 +350,7 @@ export default function VideoMeetComponent() {
             }
           };
           //jab ek user se actual video/audio stream aa jati hai peer ke through to ye event trigger hota hai.
+          // jab do user ke bich connection build ho jata hai tab chalta hai
           connections[socketListId].onaddstream = (event) => {
             setVideos((videos) => {
               // Pehle check karo — already hai kya?
@@ -398,21 +403,20 @@ export default function VideoMeetComponent() {
 
             try {
               connections[id2].addStream(window.localStream);
-            } catch (e) {
-              // manually WebRTC Offer create kar rahe hain, fir apna SDP peer ko bhej rahe hain
-              connections[id2].createOffer().then((description) => {
-                connections[id2]
-                  .setLocalDescription(description) // jo offer humne banaya vo hum apne peer connection ke andar store kar de rahe hain as LocalDescription
-                  .then(() => {
-                    socketRef.current.emit(
-                      "signal",
-                      id2,
-                      JSON.stringify({ sdp: connections[id2].localDescription }) // JSON.stringify({sdp: ...}) matlab offer ko string bana kar send kar rahe hain kyunki socket binary object direct nahi bhejta
-                    );
-                  })
-                  .catch((e) => console.log(e));
-              });
-            }
+            } catch (e) {}
+            // manually WebRTC Offer create kar rahe hain, fir apna SDP peer ko bhej rahe hain
+            connections[id2].createOffer().then((description) => {
+              connections[id2]
+                .setLocalDescription(description) // jo offer humne banaya vo hum apne peer connection ke andar store kar de rahe hain as LocalDescription
+                .then(() => {
+                  socketRef.current.emit(
+                    "signal",
+                    id2,
+                    JSON.stringify({ sdp: connections[id2].localDescription }) // JSON.stringify({sdp: ...}) matlab offer ko string bana kar send kar rahe hain kyunki socket binary object direct nahi bhejta
+                  );
+                })
+                .catch((e) => console.log(e));
+            });
           }
         }
       });
@@ -452,7 +456,7 @@ export default function VideoMeetComponent() {
     for (let id in connections) {
       if (id === socketIdRef.current) continue;
 
-      // connections[id].onaddstream(window.localStream);
+      connections[id].onaddstream(window.localStream);
       connections[id].createOffer().then((description) => {
         // har connection ke liye offer bnaya ja raha hai
         connections[id]
@@ -555,9 +559,9 @@ export default function VideoMeetComponent() {
     try {
       let tracks = localVideoref.current.srcObject.getTracks();
       tracks.forEach((track) => track.stop());
-    } catch (e) {} 
+    } catch (e) {}
 
-    routeTo("/home"); 
+    routeTo("/home");
   };
 
   return (
@@ -592,7 +596,7 @@ export default function VideoMeetComponent() {
                     messages.map((item, index) => {
                       console.log(messages);
                       return (
-                        <div style={{ marginBottom: "20px" }} key={index}>
+                        <div style={{ marginBottom: "15px" }} key={index}>
                           <p style={{ fontWeight: "bold" }}>{item.sender}</p>
                           <p>{item.data}</p>
                         </div>
@@ -602,7 +606,7 @@ export default function VideoMeetComponent() {
                     <p>No Messages Yet</p>
                   )}
                 </div>
-                <div className={styles.chattingArea}>
+                <div className={styles.chattingoldArea}>
                   <TextField
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}

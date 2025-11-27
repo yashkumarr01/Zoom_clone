@@ -13,9 +13,21 @@ function HomeComponent() {
   const [meetingCode, setMeetingCode] = useState("");
 
   const { addToUserHistory } = useContext(AuthContext);
+
   let handleJoinVideoCall = async () => {
-    await addToUserHistory(meetingCode);
-    navigate(`/${meetingCode}`);
+    if (!meetingCode) {
+      alert("Please enter a meeting code.");
+      return;
+    }
+    try {
+      await addToUserHistory(meetingCode);
+      navigate(`/${meetingCode}`);
+    } catch (error) {
+      console.error("Error saving history or joining call:", error);
+      alert(
+        "Failed to join call. Please check your login status or server connection."
+      );
+    }
   };
   return (
     <>
@@ -25,7 +37,11 @@ function HomeComponent() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center" }}>
-          <IconButton>
+          <IconButton
+            onClick={() => {
+              navigate("/history");
+            }}
+          >
             <RestoreIcon />
           </IconButton>
           <p>History</p>

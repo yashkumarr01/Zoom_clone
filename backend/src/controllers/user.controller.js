@@ -74,11 +74,18 @@ const getUserHistory = async (req, res) => {
     res.json({ message: `Something went wrong ${e}` });
   }
 };
+
 const addToHistory = async (req, res) => {
   const { token, meeting_code } = req.body;
 
   try {
     const user = await User.findOne({ token: token });
+
+    if (!user) {
+      return res
+        .status(httpStatus.UNAUTHORIZED)
+        .json({ message: "Invalid token or user session expired." });
+    }
 
     const newMeeting = new Meeting({
       user_id: user.username,
@@ -86,10 +93,14 @@ const addToHistory = async (req, res) => {
     });
 
     await newMeeting.save();
-    res.status(httpStatus.CREATED).json({ message: "Added code to history" });
+    return res
+      .status(httpStatus.CREATED)
+      .json({ message: "Added code to history" });
   } catch (e) {
-    res.json({ message: `Something went wrong ${e}` });
+    console.error("Error in addToHistory:", e);
+    return res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .json({ message: `Internal server error: ${e.message}` });
   }
 };
-
-export { login, register,getUserHistory,addToHistory };
+export { login, register, getUserHistory, addToHistory };

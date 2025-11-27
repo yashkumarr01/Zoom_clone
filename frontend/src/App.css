@@ -12,7 +12,7 @@
   padding-block: 1.6rem;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  /* align-items: center; */
 }
 
 .loginButton {
@@ -34,6 +34,7 @@
   gap: 1.6rem;
   cursor: pointer;
 }
+
 .landingMainContainer {
   display: flex;
   justify-content: space-between;
@@ -41,6 +42,7 @@
   height: 80vh;
   padding-inline: 3rem;
 }
+
 .landingMainContainer > div:nth-child(1) {
   font-size: 2.2rem;
 }
@@ -48,7 +50,7 @@
 .landingMainContainer > div:nth-child(1) div[role="button"] {
   background: #d97500;
   width: fit-content;
-  padding: 1rem;
+  padding: 0.8rem;
   border-radius: 20px;
   margin-top: 1.9rem;
 }
@@ -56,7 +58,7 @@
 .landingMainContainer > div:nth-child(1) div[role="button"] a {
   text-decoration: none;
   color: white;
-  font-size: 1.7rem;
+  font-size: 1.5rem;
 }
 
 .landingMainContainer > div:nth-child(2) img {
@@ -133,16 +135,132 @@
   .navbar p {
     display: none;
   }
-  .navbar Button{
+  .navbar Button {
     margin-left: 0;
   }
 }
 
-@media (max-width: 390px){
-  .heading{
+@media (max-width: 390px) {
+  .heading {
     font-size: 1.15rem;
   }
-  .navbar h2{
+  .navbar h2 {
     font-size: 1.2rem;
+  }
+}
+
+/* landing page responsiveness */
+@media (max-width: 1350px) {
+  .landingMainContainer > div:nth-child(1) {
+    font-size: 1.8rem;
+  }
+
+  .landingMainContainer > div:nth-child(2) img {
+    height: 60vh;
+    width: auto;
+  }
+
+.landingMainContainer > div:nth-child(1) div[role="button"] {
+  background: #d97500;
+  width: fit-content;
+  padding: 0.8rem;
+  border-radius: 20px;
+  margin-top: 1.9rem;
+}
+
+.landingMainContainer > div:nth-child(1) div[role="button"] a {
+  text-decoration: none;
+  color: white;
+  font-size: 1.3rem;
+}
+}
+
+@media (max-width: 1100px) {
+  .landingMainContainer > div:nth-child(1) {
+    font-size: 1.1rem;
+  }
+
+  .landingMainContainer > div:nth-child(2) img {
+    height: 50vh;
+    width: auto;
+  }
+
+  .landingMainContainer > div:nth-child(1) div[role="button"] {
+  background: #d97500;
+  width: fit-content;
+  padding: 0.6rem;
+  border-radius: 20px;
+  margin-top: 1.9rem;
+}
+
+.landingMainContainer > div:nth-child(1) div[role="button"] a {
+  text-decoration: none;
+  color: white;
+  font-size: 1rem;
+}
+}
+
+@media (max-width: 800px) {
+  .landingMainContainer > div:nth-child(1) {
+    font-size: 1.2rem;
+  }
+
+  .landingMainContainer > div:nth-child(2) img {
+    height: 55vh;
+    width: auto;
+  }
+.landingMainContainer > div:nth-child(1) div[role="button"] {
+  background: #d97500;
+  width: fit-content;
+  padding: 0.5rem;
+  border-radius: 20px;
+  margin-top: 1.9rem;
+}
+.landingMainContainer > div:nth-child(1) div[role="button"] a {
+  text-decoration: none;
+  color: white;
+  font-size: 1rem;
+}
+}
+
+@media (max-width: 650px) {
+  .navlist > p {
+    display: none;
+  }
+}
+
+@media (max-width: 690px) {
+  .landingPageContainer nav h2 {
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+
+  .loginButton {
+    background: #d97500;
+    width: 4rem;
+    border-radius: 5px;
+    text-align: center;
+    padding: 0.2rem;
+  }
+
+  .landingMainContainer > div:nth-child(1) {
+    font-size: 1rem;
+  }
+
+  .landingMainContainer > div:nth-child(2) img {
+    height: 45vh;
+    width: auto;
+  }
+}
+
+@media (max-width: 1000px) {
+  .landingMainContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 80vh;
+    padding-inline: 3rem;
+    margin-top: 2rem;
   }
 }
