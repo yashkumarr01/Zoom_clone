@@ -60,7 +60,9 @@ export default function Authentication() {
         console.log(result);
         setUsername("");
         setMessage(result); // jo response aaye message me store kar diya taaki snackbar me show ho sake
-        setOpen(true); // openState ko true kr rhe hai taki snackbar show ho ske
+        if (error !== "") {
+          setOpen(true); // openState ko true kr rhe hai taki snackbar show ho ske
+        }
         setError("");
         setFormState(0);
         setName("");

@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
         username: username,
         password: password,
       });
-
+  
       if (request.status === httpStatus.OK) {
         // Agar status OK(200) aya to
         localStorage.setItem("token", request.data.token); //token ko localStorage(BROWSER) me save kar rahe ho browser ke andar permanently store ho jata hai refresh karne se bhi nahi jata

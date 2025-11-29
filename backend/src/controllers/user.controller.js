@@ -38,11 +38,14 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
   const { name, username, password } = req.body; // data access kr raha hai req.body se
+  if (!name || !username || !password) {
+    return res.status(400).json({ message: "Please provide" });
+  }
 
   try {
-    const existingUser = await User.findOne({ username }); // data base me check kr raha ki kya use exist krta hai
+    const existingUser = await User.findOne({ username }); // data base me check kr raha ki kya user exist krta hai
     if (existingUser) {
-      // aga han to chlega
+      // agar han to chlega
       return res
         .status(httpStatus.FOUND)
         .json({ message: "User already exists" });
