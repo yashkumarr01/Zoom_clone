@@ -2,12 +2,13 @@ import { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import httpStatus from "http-status";
+import server from "../environment";
 
 export const AuthContext = createContext({}); // ham ek global store bna rhe hai (stores data) and provider bad me pure app ko supply krega without props drilling
 
 const client = axios.create({
   //ye axios ka ek instance bnaya .. taki hame bar bar full URL na likhna pade
-  baseURL: "http://localhost:8000/api/v1/users", //  /register /login me baseURL fix kr diya
+  baseURL: `${server}/api/v1/users`, //  /register /login me baseURL fix kr diya
 });
 
 export const AuthProvider = ({ children }) => {
